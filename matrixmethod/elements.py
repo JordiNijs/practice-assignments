@@ -159,12 +159,12 @@ class Element:
         l = self.L
         self.q = np.array(q)
 
-        self.local_element_load # =[YOUR CODE HERE, , , , , ]
+        local_element_load = [0.5 * q[0] * l, 0.5 * q[1] * l, -1.0 / 12.0 * q[1] * l * l, 0.5 * q[0] * l, 0.5 * q[1] * l, 1.0 / 12.0 * q[1] * l * l]
 
-        global_element_load #YOUR CODE HERE
+        global_element_load = np.matmul(self.Tt, np.array(local_element_load))
 
-        self.nodes[0].add_load #YOUR CODE HERE
-        self.nodes[1].add_load #YOUR CODE HERE
+        self.nodes[0].add_load(global_element_load[0:3])
+        self.nodes[1].add_load(global_element_load[3:6])
 
     def bending_moments(self, u_global, num_points=2):
         """
@@ -227,7 +227,7 @@ class Element:
 
         u = q_x*(-L*x/(2*EA) + x**2/(2*EA)) + u_1*(1 - x/L) + u_2*x/L
         w = phi_1*(-x + 2*x**2/L - x**3/L**2) + phi_2*(x**2/L - x**3/L**2) + q*(L**2*x**2/(24*EI) - L*x**3/(12*EI) + x**4/(24*EI)) + w_1*(1 - 3*x**2/L**2 + 2*x**3/L**3) + w_2*(3*x**2/L**2 - 2*x**3/L**3)
-
+        
         return u, w
     
     def plot_moment_diagram (self, u_elem, num_points=10, global_c=False, scale=1.0):
